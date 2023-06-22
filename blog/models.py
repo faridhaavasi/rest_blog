@@ -15,7 +15,8 @@ class Post(models.Model):
     created = models.DateField(auto_now_add=timezone.now)
     body = models.TextField()
     status = models.BooleanField(default=True)
-    Manager = Post_Manager()
+    objects = Post_Manager()
+
 
     def save(
             self, force_insert=False, force_update=False, using=None, update_fields=None
