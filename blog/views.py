@@ -18,3 +18,9 @@ class List_of_post_true_API(APIView):
         query_set = Post.objects.True_status()
         serializer = P_serializer(instance=query_set, many=True)
         return Response(serializer.data)
+# detail view
+class Detail_post_API(APIView):
+    def get(self, request, pk):
+        instance = Post.objects.get(pk=pk)
+        serializer = P_serializer(instance=instance)
+        return Response(serializer.data)
