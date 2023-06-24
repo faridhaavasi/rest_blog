@@ -8,6 +8,8 @@ from .models import Post
 
 class List_of_post_API(APIView):
     def get(self, request):
-        instance = Post.objects.all()
-        serializer = P_serializer(instance=instance, many=True)
+        query_set = Post.objects.all()
+        serializer = P_serializer(instance=query_set, many=True)
         return Response(serializer.data)
+
+# list of posts --> status==true
