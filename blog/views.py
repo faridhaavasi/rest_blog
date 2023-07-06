@@ -31,7 +31,7 @@ class Add_post_API(APIView):
             serializer.save()
             return Response({'status': 'added'})
         return Response(serializer.errors)
-class Update_post_API(APIView):
+class Update_Delete_post_API(APIView):
     def put(self, request, pk=None):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance, data=request.data, partial=True)
@@ -39,5 +39,9 @@ class Update_post_API(APIView):
             serializer.save() # There is an update method inside the save
             return Response({'massage': 'updated'})
         return Response(serializer.errors)
+    def delete(self, request, pk=None):
+        instance = Post.objects.get(pk=pk)
+        instance.delete()
+        return Response({'massage': 'deleted'})
 
 
