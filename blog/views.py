@@ -24,3 +24,20 @@ class Detail_post_API(APIView):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance)
         return Response(serializer.data)
+class Add_post_API(APIView):
+    def post(self, request):
+        serializer = P_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'added'})
+        return Response(serializer.errors)
+class Update_post_API(APIView):
+    def put(self, request, pk=None):
+        instance = Post.objects.get(pk=pk)
+        serializer = P_serializer(instance=instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save() # There is an update method inside the save
+            return Response({'massage': 'updated'})
+        return Response(serializer.errors)
+
+
