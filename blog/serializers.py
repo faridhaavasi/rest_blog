@@ -11,11 +11,21 @@ from .models import Post
 #
 
 # serializer P_serializer ------> serializer.ModelSerializer
-
+# fun validator
+def title_forbidden(data):
+    list_of_title_forbidden = ['alexis', 'alexis texas', 'porn', 'johny', 'johny sins', 'porno', 'sex']
+    if data in list_of_title_forbidden:
+        raise serializers.ValidationError({'title': 'Shame on you:/ Inaccurate vulgarity'})
+    for i in list_of_title_forbidden:
+        if data == i.upper():
+            raise serializers.ValidationError('Shame on you:/ Inaccurate vulgarity')
+        if data == i:
+            raise serializers.ValidationError('Shame on you:/ Inaccurate vulgarity')
 class P_serializer(serializers.ModelSerializer):
+    title = serializers.CharField(max_length=50, validators=[title_forbidden])
     class Meta:
         model = Post
         # fields = '__all__'  # all fields serialized
         exclude = ['id', 'slug', 'created']  # except these fields (these fields should not be serialized)
-
+        validators = [title_forbidden]
 
