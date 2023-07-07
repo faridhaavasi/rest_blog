@@ -28,6 +28,7 @@ class Add_post_API(APIView):
     def post(self, request):
         serializer = P_serializer(data=request.data)
         if serializer.is_valid():
+            serializer.validated_data['user'] = request.user
             serializer.save()
             return Response({'status': 'added'})
         return Response(serializer.errors)

@@ -8,3 +8,9 @@ class Register(APIView):
             serializer.save()
             return Response({'massage': 'registered'})
         return Response(serializer.errors)
+class Chek_user(APIView):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            return Response({'user': user.username})
+
