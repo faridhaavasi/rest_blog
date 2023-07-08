@@ -3,11 +3,12 @@ from rest_framework.views import APIView
 from .serializers import P_serializer
 from .models import Post
 from rest_framework import status
-
+from rest_framework.permissions import IsAuthenticated
 
 # list of all post
 
 class List_of_post_API(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         query_set = Post.objects.all()
         serializer = P_serializer(instance=query_set, many=True)
@@ -15,17 +16,20 @@ class List_of_post_API(APIView):
 
 # list of posts --> status==true
 class List_of_post_true_API(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         query_set = Post.objects.True_status()
         serializer = P_serializer(instance=query_set, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 # detail view
 class Detail_post_API(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 class Add_post_API(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = P_serializer(data=request.data)
         if serializer.is_valid():
@@ -34,6 +38,7 @@ class Add_post_API(APIView):
             return Response({'status': 'added'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class Update_Delete_post_API(APIView):
+    permission_classes = [IsAuthenticated]
     def put(self, request, pk=None):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance, data=request.data, partial=True)
