@@ -30,6 +30,8 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
+    created_as = models.DateField()
+
 
     def __str__(self):
         return self.text[:30]

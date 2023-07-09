@@ -7,4 +7,5 @@ urlpatterns = [
     path('detail/<int:pk>', views.Detail_post_API.as_view(), name='detail'),
     path('add_post', views.Add_post_API.as_view(), name='add_post'),
     path('update_delete/<int:pk>', views.Update_Delete_post_API.as_view()),
+    path('add_comment', views.Add_comment.as_view()),
 ]

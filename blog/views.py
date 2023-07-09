@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import P_serializer
-from .models import Post
+from .serializers import P_serializer, Comment_serializer
+from .models import Post, Comment
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
@@ -51,4 +51,11 @@ class Update_Delete_post_API(APIView):
         instance.delete()
         return Response({'massage': 'deleted'}, status=status.HTTP_200_OK)
 
+class Add_comment(APIView):
+    def post(self, request):
+        serializer = Comment_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'massage': 'added comment'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
