@@ -42,13 +42,16 @@ class P_serializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=50, validators=[title_forbidden])
     class Meta:
         model = Post
-        #fields = '__all__'  # all fields serialized
-        exclude = ['id', 'slug', 'created']  # except these fields (these fields should not be serialized)
+        fields = '__all__'  # all fields serialized
+        #exclude = ['id', 'slug', 'created']  # except these fields (these fields should not be serialized)
         validators = [title_forbidden]
 
     def get_comments(self, obj):
-        serializer = Comment_serializer(instance=obj.comments.all(), many=True)
-        return serializer.data
+        if obj.comments:
+            serializer = Comment_serializer(instance=obj.comments.all(), many=True)
+            return serializer.data
+
+
 
 
 

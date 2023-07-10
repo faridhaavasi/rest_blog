@@ -4,6 +4,7 @@ from .serializers import P_serializer, Comment_serializer
 from .models import Post, Comment
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 
 # list of all post
 
@@ -11,7 +12,9 @@ class List_of_post_API(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         query_set = Post.objects.all()
-        serializer = P_serializer(instance=query_set, many=True)
+        pager = PageNumberPagination()
+        result = pager.paginate_queryset(queryset=query_set, request=request)
+        serializer = P_serializer(instance=result, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # list of posts --> status==true
