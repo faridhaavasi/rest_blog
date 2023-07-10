@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Post, Comment
+from persiantools.jdatetime import JalaliDate, JalaliDateTime
+
 # serializer for Post -----> serializers.Serializer
 
 # class P_serializer(serializers.Serializer):
@@ -22,10 +24,18 @@ def title_forbidden(data):
         if data == i:
             raise serializers.ValidationError('Shame on you:/ Inaccurate vulgarity')
 class Comment_serializer(serializers.ModelSerializer):
+    date_ago = serializers.SerializerMethodField()
     #created_as = serializers.SerializerMethodField()
     class Meta:
         model = Comment
         fields = '__all__'
+
+    def get_date_ago(self, obj):
+        date = obj.created_as
+        jalali_date = JalaliDate(date)
+        jalali_date_time = JalaliDateTime(jalali_date)
+        return jalali_date_time.strftime("%c")
+
 class P_serializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     title = serializers.CharField(max_length=50, validators=[title_forbidden])
