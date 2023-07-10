@@ -37,6 +37,7 @@ class Comment_serializer(serializers.ModelSerializer):
         return jalali_date_time.strftime("%c")
 
 class P_serializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field='username')
     comments = serializers.SerializerMethodField()
     title = serializers.CharField(max_length=50, validators=[title_forbidden])
     class Meta:
