@@ -7,3 +7,4 @@ class BlocklistPermission(permissions.BasePermission):
         username = request.user.username
         blocked = Blacked.objects.filter(username=username).exists()
         return not blocked
+

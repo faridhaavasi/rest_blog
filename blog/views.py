@@ -5,7 +5,7 @@ from .models import Post, Comment
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
-
+from .permissions import AlowUserPermission
 # list of all post
 
 class List_of_post_API(APIView):
@@ -41,7 +41,7 @@ class Add_post_API(APIView):
             return Response({'status': 'added'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class Update_Delete_post_API(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AlowUserPermission]
     def put(self, request, pk=None):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance, data=request.data, partial=True)
@@ -55,6 +55,7 @@ class Update_Delete_post_API(APIView):
         return Response({'massage': 'deleted'}, status=status.HTTP_200_OK)
 
 class Add_comment(APIView):
+
     def post(self, request):
         serializer = Comment_serializer(data=request.data)
         if serializer.is_valid():
