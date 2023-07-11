@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import P_serializer, Comment_serializer
@@ -6,10 +7,14 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from .permissions import AlowUserPermission
+from rest_framework import viewsets
+
+
 # list of all post
 
 class List_of_post_API(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         query_set = Post.objects.all()
         pager = PageNumberPagination()
@@ -17,22 +22,30 @@ class List_of_post_API(APIView):
         serializer = P_serializer(instance=result, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 # list of posts --> status==true
 class List_of_post_true_API(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         query_set = Post.objects.True_status()
         serializer = P_serializer(instance=query_set, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # detail view
 class Detail_post_API(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, pk):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class Add_post_API(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = P_serializer(data=request.data)
         if serializer.is_valid():
@@ -40,19 +53,24 @@ class Add_post_API(APIView):
             serializer.save()
             return Response({'status': 'added'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class Update_Delete_post_API(APIView):
     permission_classes = [IsAuthenticated, AlowUserPermission]
+
     def put(self, request, pk=None):
         instance = Post.objects.get(pk=pk)
         serializer = P_serializer(instance=instance, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save() # There is an update method inside the save
+            serializer.save()  # There is an update method inside the save
             return Response({'massage': 'updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors)
+
     def delete(self, request, pk=None):
         instance = Post.objects.get(pk=pk)
         instance.delete()
         return Response({'massage': 'deleted'}, status=status.HTTP_200_OK)
+
 
 class Add_comment(APIView):
 
@@ -63,3 +81,39 @@ class Add_comment(APIView):
             return Response({'massage': 'added comment'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# class PostViewSet(viewsets.ViewSet):
+#     """
+#     A simple ViewSet for listing or retrieving posts.
+#     """
+#
+#     def list(self, request):
+#         queryset = Post.objects.all()
+#         serializer = P_serializer(queryset, many=True)
+#         return Response(serializer.data)
+#
+#     def retrieve(self, request, pk=None):
+#         queryset = Post.objects.all()
+#         post = get_object_or_404(queryset, pk=pk)
+#         serializer = P_serializer(post)
+#         return Response(serializer.data)
+#
+#     def update(self, request, pk):
+#         instance = Post.objects.get(pk=pk)
+#         serializer = P_serializer(instance=instance, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()  # There is an update method inside the save
+#             return Response({'massage': 'updated'}, status=status.HTTP_200_OK)
+#         return Response(serializer.errors)
+#
+#
+
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for viewing and editing accounts.
+    """
+    queryset = Post.objects.all()
+    serializer_class = P_serializer
+    #permission_classes = [AlowUserPermission]

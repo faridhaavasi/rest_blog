@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import PostViewSet
+from rest_framework.routers import DefaultRouter
 app_name = 'blog'
 urlpatterns = [
     path('list', views.List_of_post_API.as_view(), name='list'),
@@ -9,3 +11,6 @@ urlpatterns = [
     path('update_delete/<int:pk>', views.Update_Delete_post_API.as_view()),
     path('add_comment', views.Add_comment.as_view()),
 ]
+router = DefaultRouter()
+router.register(r'posts', PostViewSet, basename='post')
+urlpatterns += router.urls
